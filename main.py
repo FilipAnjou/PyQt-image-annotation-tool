@@ -250,6 +250,7 @@ class SetupWindow(QWidget):
             self.groupBox.setLayout(self.formLayout)
             self.scroll.setWidget(self.groupBox)
             self.scroll.setWidgetResizable(True)
+
     def centerOnScreen(self):
         """
         Centers the window on the screen.
@@ -296,6 +297,7 @@ class SetupWindow(QWidget):
             self.error_message.setText(message)
 
 
+
 class LabelerWindow(QWidget):
     def __init__(self, labels, input_folder, mode):
         super().__init__()
@@ -307,8 +309,10 @@ class LabelerWindow(QWidget):
         self.width = 1100
         self.height = 770
         # img panal size should be square-like to prevent some problems with different aspect ratios
-        self.img_panel_width = 650
-        self.img_panel_height = 650
+        #self.img_panel_width = 650
+        #self.img_panel_height = 650
+        self.img_panel_width  = 1200
+        self.img_panel_height = 1200
 
         # state variables
         self.counter = 0
@@ -317,8 +321,34 @@ class LabelerWindow(QWidget):
         self.labels = labels
         self.num_labels = len(self.labels)
         self.num_images = len(self.img_paths)
-        self.assigned_labels = {}
         self.mode = mode
+        print(self.labels)
+       
+        # Load existing labels if present
+        # TODO: Also check 'assigned_classes_automatically_generated.csv'
+        self.assigned_labels = {}
+        label_file_path = input_folder + "/output/assigned_classes.csv"
+        print("Label file path: " + label_file_path)
+        first_img = ''
+        if os.path.exists(label_file_path):
+            with open(label_file_path, 'r') as label_file:
+                for i, line in enumerate(label_file.readlines()):
+                    if i > 0:
+                        parts = line.split(',')
+                        for j, p in enumerate(parts[1:]):
+                            if int(p) == 1:
+                                if not parts[0] in self.assigned_labels:
+                                    self.assigned_labels[parts[0]] = []
+                                self.assigned_labels[parts[0]].append(self.labels[int(j)])
+                        
+                        # Update button colors
+                        if i == 1:
+                            first_img = parts[0]
+                            #self.set_button_color(parts[0])
+
+                    #print(str(i) + ": " + line) 
+        print("Loaded labels:")
+        print(self.assigned_labels)
 
         # initialize list to save all label buttons
         self.label_buttons = []
@@ -339,6 +369,9 @@ class LabelerWindow(QWidget):
 
         # init UI
         self.init_ui()
+            
+        # NOTE: While something like this would be nice, it doesn't really work.
+        #self.set_button_color(parts[0])
 
     def init_ui(self):
 
@@ -455,6 +488,8 @@ class LabelerWindow(QWidget):
         # get image filename from path (./data/images/img1.jpg → img1.jpg)
         img_path = self.img_paths[self.counter]
         img_name = os.path.split(img_path)[-1]
+        
+        print(self.assigned_labels)
 
         # if the img has some label already
         if img_name in self.assigned_labels.keys():
