@@ -21,7 +21,7 @@ label(s) to these images.
 
 1. Clone the project:
     ```bash
-    git clone https://github.com/robertbrada/PyQt-image-annotation-tool.git
+    git clone https://github.com/FilipAnjou/PyQt-image-annotation-tool.git
     ```
 
 2. Enter the directory and install the dependencies (you might need to use ```pip3``` instead of ```pip```):
