@@ -24,12 +24,12 @@ label(s) to these images.
     git clone https://github.com/FilipAnjou/PyQt-image-annotation-tool.git
     ```
 
-2. Enter the directory and install the dependencies (you might need to use ```pip3``` instead of ```pip```):
+2. Enter the directory and install the dependencies (you might need to use `pip3` instead of `pip`):
     ```bash
     cd PyQt-image-annotation-tool
     pip install -r requirements.txt
     ```
-3. Run the app (use ```python3``` for Python 3)
+3. Run the app (use `python3` for Python 3)
    ```bash
     python main.py
     ```
@@ -40,6 +40,7 @@ label(s) to these images.
 - P: Previous image
 - 1-9: Select label
 
-## Contributing
+## TODO
 
-Pull requests are welcomed.
+- [x] Use `a` and `d` to switch between images (`N` and `P` are awkward)
+- [x] Skip to first un-labeled on startup (assumes no image has been skipped)

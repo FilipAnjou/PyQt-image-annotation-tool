@@ -369,6 +369,10 @@ class LabelerWindow(QWidget):
             
         # NOTE: While something like this would be nice, it doesn't really work.
         #self.set_button_color(parts[0])
+        
+        # Skip to first un-labeled image
+        self.counter = len(self.assigned_labels)-1
+        self.show_next_image()
 
     def init_ui(self):
 
@@ -443,9 +447,13 @@ class LabelerWindow(QWidget):
         # Add "Prev Image" and "Next Image" keyboard shortcuts
         prev_im_kbs = QShortcut(QKeySequence("p"), self)
         prev_im_kbs.activated.connect(self.show_prev_image)
+        prev_im_kbs2 = QShortcut(QKeySequence("a"), self)
+        prev_im_kbs2.activated.connect(self.show_prev_image)
 
         next_im_kbs = QShortcut(QKeySequence("n"), self)
         next_im_kbs.activated.connect(self.show_next_image)
+        next_im_kbs2 = QShortcut(QKeySequence("d"), self)
+        next_im_kbs2.activated.connect(self.show_next_image)
 
         # Add "generate csv file" button
         next_im_btn = QtWidgets.QPushButton("Generate csv", self)
