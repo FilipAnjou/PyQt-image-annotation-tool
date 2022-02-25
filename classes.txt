@@ -1,0 +1,16 @@
+left-none
+left-dry
+left-wet
+left-snow
+left-snow-tracks
+ego-dry
+ego-wet
+ego-snow
+ego-snow-tracks
+right-none
+right-dry
+right-wet
+right-snow
+right-snow-tracks
+difficult
+garbage
