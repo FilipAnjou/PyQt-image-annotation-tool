@@ -2,6 +2,7 @@ import csv
 import os
 import shutil
 import sys
+import random
 
 import numpy as np
 from PyQt5 import QtWidgets
@@ -346,6 +347,7 @@ class LabelerWindow(QWidget):
                 break
         print("Loaded labels:")
         print(self.assigned_labels)
+        print("(" + str(len(self.assigned_labels)) + " labeled images)")
 
         # initialize list to save all label buttons
         self.label_buttons = []
@@ -454,6 +456,14 @@ class LabelerWindow(QWidget):
         next_im_kbs.activated.connect(self.show_next_image)
         next_im_kbs2 = QShortcut(QKeySequence("d"), self)
         next_im_kbs2.activated.connect(self.show_next_image)
+        
+        # Show random unlabeled image
+        rnd_im_kbs = QShortcut(QKeySequence("r"), self)
+        rnd_im_kbs.activated.connect(self.show_rnd_image)
+
+        # Esc key to clear labels for shown image
+        clear_labels_kbs = QShortcut(QKeySequence("esc"), self)
+        clear_labels_kbs.activated.connect(self.clear_img_labels)
 
         # Add "generate csv file" button
         next_im_btn = QtWidgets.QPushButton("Generate csv", self)
@@ -558,6 +568,14 @@ class LabelerWindow(QWidget):
         else:
             self.set_button_color(img_name)
 
+    def clear_img_labels(self):
+        img_path = self.img_paths[self.counter]
+        filename = os.path.split(img_path)[-1]
+        if filename in self.assigned_labels:
+            self.assigned_labels[filename].clear()
+            self.set_button_color(filename)
+            self.csv_generated_message.setText('')
+
     def show_next_image(self):
         """
         loads and shows next image in dataset
@@ -607,6 +625,34 @@ class LabelerWindow(QWidget):
 
                 self.set_button_color(filename)
                 self.csv_generated_message.setText('')
+
+    def show_rnd_image(self):
+
+        # Shuffle all image paths, then pop off front element until it is an unlabeled image
+        # Then show that image
+        # Awkward in theory *and* in practice!
+
+        shuffled = random.sample(self.img_paths, k=len(self.img_paths))
+        filename = os.path.split(shuffled[0])[-1]
+        while len(shuffled) > 0 and (filename in self.assigned_labels):
+            shuffled.pop(0)
+            filename = os.path.split(shuffled[0])[-1]
+        if len(shuffled) == 0:
+            return
+
+        path = shuffled[0]
+        
+        # Inefficient way of updating the counter
+        for i, img_path in enumerate(self.img_paths):
+            if img_path == path:
+                self.counter = i
+                break
+
+        self.set_image(path)
+        self.img_name_label.setText(path)
+        self.progress_bar.setText(f'image {self.counter + 1} of {self.num_images}')
+        self.set_button_color(filename)
+        self.csv_generated_message.setText('')
 
     def set_image(self, path):
         """
